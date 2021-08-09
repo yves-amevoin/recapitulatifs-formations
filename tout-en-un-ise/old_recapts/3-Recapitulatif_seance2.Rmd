@@ -1,0 +1,576 @@
+---
+title: "Récapitulatif de la séance deux"
+author: "Yves Amevoin, ISE"
+date: "Novembre 2018"
+output:
+  html_document:
+    css: style.css
+    highlight: tango
+    theme: simplex
+    toc: yes
+    dpi: 1800
+    dev: "png"
+    code_download: TRUE
+---
+
+
+```{block, type = "montype2"}
+
+## Pour ceux qui n’étaient pas là , vous avez raté quoi....
+
+**La partie statistiques descriptives**. Après avoir effectué un petit rappel de la séance 1,
+on a continué l'exploration de nos données en faisant un détour sur les données
+manquantes. Malheureusement, certains n'avaient les *packages* nécessaires pour 
+charger les bases sous d'autres formats. Nous allons y venir dans la section *ce qui restait*, que je vous invite vivement à  suivre pas à pas. On a appris que dans R, les objets ont des *modes* c'est à dire le *type* de données qui les constitue. Ils peuvent être soit des caractères, soit des numériques, soit des entiers, soit des logiques (`TRUE` ou `FALSE`) ou même des complexes. On a vu aussi que sous R, vous avez exactement deux principales manières de stocker des données.
+
+- Un stockage avec des *modes* uniques: Vecteurs, Matrices, Tableaux.
+- Un stockage avec des *modes* variés: `data.frame`[^1], liste.
+
+Finalement, on a dit que R lorsqu’il le peut effectue, sur des stockages de mode
+unique, une conversion automatique vers le mode le plus fort lorsque cela est
+nécessaire.
+
+On a appris à créer une fonction sous R, un vecteur, une table, un barplot, et au 
+passage on a répondu à des questions sur notre base de données.
+
+Malheureusement, on n'a pas eu le temps de parcourir tout ce qui avait été prévu.
+Je vous invite à lire la section *Ce qui restait* pour combler le gap.
+
+ps: Vous pouvez obtenir le code du fichier *.Rmd* qui a servi à faire ce document
+en cliquant sur code en haut.
+```
+
+
+## Ce qu'on a fait
+
+### Rechargement du *data.frame* `cas_pratique`.
+
+On a rechargé une nouvelle fois le *data.frame* de travail. C'est le *data.frame*
+`cas_pratique.txt`. Mais avant, il ne faut pas oublier de redéfinir le répertoire
+de travail de R à l'endroit où se trouve le fichier script. Rassurez-vous aussi d'avoir
+aussi le dossier *data* avec les bases de données sous différents formats. Pour définir 
+le répertoire de travail au répertoire courant, une fois que vous
+**aurez ouvert** le fichier script , cela se fera de la façon suivante:
+
+- Cliquez sur `Session` dans Rstudio,
+- Cliquez ensuite sur `Set Working Directory`
+- Enfin choisissez `To Source File Location`.
+
+Le chargement de la base de données s'effectue de la façon suivante:
+
+```{r}
+cas_pratique <- read.table(file = "data/cas_pratique.txt", header = TRUE)
+```
+
+On a observé les statistiques sommaires de la base de données avec la fonction `summary` et on a examiné ses variables, en utilisant la fonction `str`.
+
+```{r}
+summary(cas_pratique)
+
+str(cas_pratique)
+```
+
+Après avoir remarqué que la base compte 9 variables et 1078 observations, on a vu que les variables sont des vecteurs ayant différents sortes de *type*, appelés
+*modes*. Les facteurs, appelés *factor* par exemple, sont des entiers, avec
+des étiquettes derrière chaque valeur qui sont les niveaux (*level*) de ce facteur; 
+c'est en quelques sortes les modalités de la variable catégorielle.
+
+### Analyse des données manquantes
+
+Les variables du *data.frame* peuvent être accessibles avec le dollar, `$`. On a
+vu aussi que les variables du *data.frame* sont des vecteurs, qui contiennent donc
+des valeurs de même mode. On a ensuite décidé de calculer le pourcentage
+de manquants sur la variable `sexe`, en utilisant les fonctions `is.na`, `sum` et `length`,
+et en se rappelant que R effectue une conversion lorsque cela est nécessaire.
+
+En effet la fonction `is.na` appliquée sur un vecteur, retourne un vecteur
+de mode `logical` qui teste si chaque valeur du vecteur donnée en argument
+est une valeur manquante ou pas, et retourne un `TRUE` si oui, et un `FALSE` sinon.
+
+Grâce à la conversion, le `TRUE` est converti en 1 et le `FALSE` en 0. On a donc
+cherché le pourcentage de manquants sur la variable sexe de la façon suivante:
+
+```{r}
+sum(is.na(cas_pratique$sexe))/length(cas_pratique$sexe)
+```
+
+
+On a eu l’idée d'appliquer la même chose à toutes les variables du *data.frame*. Mais
+pour ne pas écrire toutes les variables avec le dollar `$`, on a décidé de faire une
+fonction qui va prendre un vecteur `x` en paramètre et renvoyer le pourcentage
+de manquant dans `x`. On a donc appris à créer une fonction que l'on a appelée `pourc_manq_calc`.
+
+```{r}
+pourc_manq_calc <- function(x){
+  return(sum(is.na(x))/length(x))
+}
+
+```
+
+On aurait pu gagner en lignes de codes en récrivant la fonction 
+de la façon suivante :
+
+```{r}
+pourc_manq_calc <- function(x) sum(is.na(x))/length(x)
+```
+
+On a ensuite appris une nouvelle fonction, `apply`, pour exécuter une fonction sur toutes
+les colonnes (dans ce cas on met `MARGIN = 2`) ou toutes les lignes (dans ce cas on met `MARGIN = 1`) d'un *data.frame*. On a exécuté la fonction `pourc_manq_calc` 
+sur toutes les colonnes   du *data.frame* `cas_pratique` et on a obtenu un vecteur
+de pourcentage de manquants de chaque variable. On a remarqué que ce vecteur avait des
+noms qui correspondaient au nom de chaque variable. Donc il est possible d'avoir des vecteurs dont chaque composante est nommée
+sous R.
+
+```{r}
+pourcentage_manquants <- apply(X = cas_pratique, MARGIN = 2, FUN = pourc_manq_calc)
+
+pourcentage_manquants
+```
+
+
+On a ensuite effectué un graphique en barre pour avoir le pourcentage de manquants
+par variables grâce à la fonction `barplot`.
+
+```{r, fig.width=17, fig.height=12, fig.align="center"}
+barplot(pourcentage_manquants)
+```
+
+On a ensuite vu que l'on pouvait changer un peu l'allure du graphique pour le rendre
+plus propre et plus beau, conformément à ce que nous voulons. On a décidé d'effectuer les changements suivants:
+
+1. Donner un vecteur plus cohérent que des noms de variables séparés par des `_` pour
+les noms au niveau des axes des abscisses (on a créé pour la première fois un vecteur
+de caractères dans R, nommé `noms` et on a utilisé l'argument `names.arg` de la
+fonction `barplot`).
+
+2. Changer la couleur des barres (On a utilisé l'argument `col` de la fonction `barplot`).
+
+3. Réduire légèrement la taille au niveau des noms sur l'axe des abscisses (On a utilisé
+l'argument `cex.names` de la fonction `barplot`)
+
+4. Donner un titre aux axes des abscisses et des ordonnées  et donner un titre au graphique
+(On a utilisé les arguments `xlab`, `ylab` et `main` respectivement)
+
+5. Multiplier par 100 pour avoir les pourcentages[^2] sur le graphique en barre.
+
+Je profite dans la démonstration d'en bas, pour vous ajouter plusieurs options pour
+les graphiques en barre en plus des 5 choses que l'on a citées en haut, afin de vous
+permettre de voir l’étendue des possibilités.
+
+On a ainsi obtenu ceci:
+
+```{r, fig.width=18, fig.height=12, fig.align="center"}
+
+#On cree un vecteur en utilisant le c, la parenthese et les elements 
+#qui le compose entre griffes si ce sont des caracteres, separe par une virgule.
+#
+noms <- c("sexe", "age", "niveau d’étude", 
+          "résultat du test", "incitation reçue?",
+          "montant de l'incitation", "test cherche?",
+          "rapports sexuels?", "rap. sexuels 12 mois?")
+
+barplot(100*pourcentage_manquants,
+        col = "skyblue", #la couleur hexa vient du site https://www.color-hex.com
+        names.arg = noms, #Le nom des elements de l'axe x
+        xlab = "Différentes variables", # le titre de l'axe x
+        ylab = "% de manquants", # Le titre de l'axe y
+        main = "REPRESENTATION DES % DE MANQUANTS",# Le titre du graphe
+        border = "#0038B2", #faut-il ou pas mettre une bordure? 
+        #Si oui on peut mettre la couleur
+        font.axis = 1, #la fonte des axe en gras
+        col.axis = "#0038B2", # la couleur sur les axes
+        col.main = "#CC2828", # la couleur sur les axes
+        col.lab = "#CC2828", # la couleur des titres des axes
+        cex.main = 2, # La taille du titre
+        cex.axis = 1.5,# La taille sur les axes
+        cex.lab = 1.25, # la taille des etiquettes des axes
+        las = 1 #la position des etiquettes sur l'axe des ordonnees (perpendiculaire a l'axe)
+        )
+
+```
+
+Pour finir , si vous voulez faire des tours sur les options des graphiques
+en barre effectués avec les fonctionnalités basiques de R, [regardez ici](https://www.r-graph-gallery.com/209-the-options-of-barplot/), [là](https://www.r-graph-gallery.com/210-custom-barplot-layout/), ou encore
+[là](http://www.r-graph-gallery.com/37-barplot-with-number-of-observation)
+
+### Quelques tabulations
+
+Apres voir analysé les graphiques, on a effectué quelques tabulations pour obtenir des
+réponses sur certaines questions ludiques que l'on a posées.
+
+1. Comment se repartissent les pourcentages de manquants pour la variable `rapports_sexuels_12m` suivant le sexe?
+2. Quel est le taux de prévalence du VIH sida dans l’échantillon?
+
+Pour répondre à la première question, on a utilisé une fonction de R, la fonction `by`.
+C'est une fonction qui mimique le `tapply` et permet d'effectuer une tache suivant
+les valeurs d'un facteur. On a donc calculé le pourcentage de manquants, suivant
+les valeurs de la variable `sexe` pour la variable `rapports_sexuels_12m`.
+
+```{r}
+by(cas_pratique$rapports_sexuels_12m, cas_pratique$sexe, pourc_manq_calc)
+```
+On remarque que près de 25% des personnes de sexe Masculin n'y ont pas
+répondu, contre seule 11% chez les personnes de sexe Féminin.
+On a après effectué une tabulation grâce à la fonction `table`, pour regarder
+le nombre de personnes séropositives dans l’échantillon.
+
+```{r}
+table_sida <- table(cas_pratique$resultat_test)
+
+table_sida
+```
+
+Mais la table nous donne les résultats absolus. Afin d'avoir les résultats relatifs,
+on a utilisé la fonction `prop.table` pour avoir les proportions au niveau de la variable
+`resultat_test`.
+
+```{r}
+prop.table(table_sida)
+```
+
+On a conclut à une proportion d'environ 5% de séropositifs au sein de l’échantillon. C'est là que nous nous sommes arrêtés à la séance passée. Mais il restait certaines petites choses que nous n'avions pas abordées. C'est l'objet de la section suivante.
+
+## Ce qui restait
+
+Il ne restait pas grand chose. Charger les bases sous différents formats, faire des tabulations sur deux variables, faire une boîte
+à moustaches, et étudier l'option `na.rm`.
+Un package est juste une portion de logiciel, qui vient se greffer sur votre logiciel R, afin de vous permettre d'effectuer plus rapidement des tâches spécifiques.
+
+Malheureusement, plusieurs personnes n'avaient pas les packages du `tidyverse`. Le [tidyverse](https://www.tidyverse.org/packages/) est un ensemble de packages qui forment
+un tout cohérent pour  traiter les données, sortir des statistiques sommaires
+et en faire des visualisations. Si vous ne les avez pas, veuillez les installer de la façon suivante avant de continuer avec la section:
+
+```{r eval=FALSE}
+
+install.packages("tidyverse")
+
+```
+
+
+Aussi, puisque nous seront amener à étudier la rédaction de rapport directement
+sous RStudio, je vous conseille soit:
+
+1. De vérifier que vous avez une installation de $\LaTeX$ complète sur votre machine,
+
+2. Dans le cas contraire, de vous assurer que vous avez une installation minimale
+requise pour effectuer presque tous les travaux, grâce au package `tinytex` que vous
+devez installer. Ensuite, installer la distribution minimale.
+
+```{r eval=FALSE}
+
+install.packages("tinytex")
+tinytex::install_tinytex()
+```
+
+
+
+### Charger les bases de données d'autre formats.
+
+Pour pouvoir charger les bases de données de différents autres formats
+nous allons utiliser le package `haven` qui fait parti du *tidyverse*. Il dispose
+des fonctions `read_stata` (ou `read_dta`), `read_spss` (ou `read_sav`) pour 
+charger respectivement les bases de données aux format `stata` (`.dta`) et `spss` (`.sav`).
+Nous allons les appliquer sur les bases de données sous les autres formats disponibles
+dans le dossier `data`. La fonction `library`, permet de charger un package.
+
+```{r}
+library(haven)
+
+cas_pratique_stata <- read_stata(file = "data/cas_pratique.dta")
+
+str(cas_pratique_stata)
+
+cas_pratique_spss <- read_sav(file = "data/cas_pratique.sav")
+
+str(cas_pratique_spss)
+```
+
+Pour charger une base de données au format `.xlsx` (excel), on peut utiliser un autre package nommé `readxl` qui fait aussi 
+parti du tidyverse, et qui dispose de la fonction `read_excel`.
+
+```{r}
+library(readxl)
+
+cas_pratique_excel <- read_excel(path = "data/cas_pratique.xlsx", #chemin vers le fichier
+           sheet = 1 # La feuille à telecharger
+           )
+
+str(cas_pratique_excel)
+```
+
+Vous aurez remarqué que lors des `str` que j'ai générés, les variables ne montrent pas exactement  les mêmes propriétés que lorsqu'on avait chargé la base sous format `.txt`. En effet certains facteurs (factor) sont pris comme caractères, et le NA est considéré comme
+un caractère "NA" et non comme une donnée manquante. Nous reviendrons lors de la séance nettoyage de base de données sur 
+comment nettoyer une base et obtenir les données qui peuvent coller avec votre analyse.
+
+### Les doubles tabulations
+
+Lorsqu'on utilisait la fonction `table` pour chercher le nombre de séropositifs, un participant avait demandé comment avoir la prévalence
+par sexe. La question faisait parti des choses à voir. Pour avoir les proportions par sexe, on effectue une tabulation sur
+deux variables: le sexe et le résultat du test de dépistage.
+
+```{r}
+table_sida_sexe <- table(cas_pratique$sexe, cas_pratique$resultat_test)
+
+table_sida_sexe
+```
+
+
+Pour avoir les données en terme relatif, on utilise toujours la fonction `prop.table`. Mais cette fois-ci, on peut lui préciser un argument `margin` pour indiquer si l'on veut les pourcentages par ligne (`margin` = 1) ou par colonne (`margin` = 2). Lorsqu'on ne le précise pas, le pourcentage 
+est calculé sur le total.
+
+```{r}
+prop.table(table_sida_sexe, margin = 1)
+```
+
+Chez les personnes de sexe `Feminin`, le taux de prévalence est de 7.15% dans l’échantillon contre 3.76% chez les personnes
+de sexe `Masculin`.
+
+
+### Faire une boîte à moustaches
+
+La fonction `boxplot` permet de faire une boîte à moustaches sur une variable quantitative. On peut en faire un exemple avec l'âge.
+
+```{r, fig.align="center"}
+boxplot(cas_pratique$age)
+```
+
+Si l'on veut visualiser la distribution suivant les valeurs d'une variable qualitative, on peut utiliser une notation dans R que l'on appelle notation formule: A gauche, on met une variable dépendante et à droite, la ou les variables explicatives suivies d'un plus. Entre
+la variable dépendante et les variables explicatives on met un tilde (`~`). Il faut ensuite préciser dans quelle base de données constituer la formule que l'on a écrite. C'est cette même notation qu'on peut utiliser lorsque l'on effectue des modèles.
+En appliquant cette formule sur la base de données, on a:
+
+```{r, fig.width=17, fig.height=12, fig.align="center"}
+boxplot(age ~ sexe + resultat_test, data = cas_pratique)
+```
+
+On peut donner des couleurs et éditer légèrement le graphique en:
+
+1. Définissant le vecteur des couleurs que l'on désire mettre,
+
+2. Donnant un titre au graphique,
+
+3. Nommant les différents axes,
+
+4. En donnant un vecteur qui va servir pour les noms sur les axes des abscisses,
+
+4. En donnant une légende au graphique.
+
+Je profite pour ajouter quelques options qui restent en général les mêmes pour les graphiques que vous allez rencontrer.
+
+```{r, fig.width=15, fig.height=12, fig.align="center"}
+
+
+#C'est le vecteur pour les noms des abscicces
+noms_abscisses <- c("Féminin et Séronégatif", "Masculin et Séronégatif",
+                    "Féminin et Séropositif", "Masculin et Séropositif"
+                    )
+
+couleurs <- c("#b8e794", "#b8e794", "#f0ddc6", "#f0ddc6")
+
+
+
+#On cree le boxplot normalement
+
+boxplot(age ~ sexe + resultat_test, data = cas_pratique,
+        names = noms_abscisses, #noms pour les differents axes 
+        main = "DISTRIBUTION DE L'ÂGE EN FONTION DU SEXE ET DU STATUT SÉROLOGIQUE",
+        xlab = "Sexe et statut sérologique",
+        ylab = "Age",
+        col = couleurs, #couleurs pour les boites
+        font.axis = 2, #la fonte des axe en gras
+        col.axis = "#0038B2", # la couleur sur les axes
+        col.main = "#CC2828",
+        col.lab = "#0038B2",
+        cex.main = 2, # La taille du titre
+        cex.axis = 1.2,# La taille sur les axes
+        cex.lab = 1.25, # la taille des titre des axes
+        border = "darkblue",
+        frame.plot = FALSE #Enlever le cadre du graphique
+        )
+
+# revoir la couleur des axes
+
+axis(side = 1, # Sur quel axe on veut effectuer des transformations? 
+     col = "#0038B2", # La couleur de l'axe?
+     col.ticks = "darkblue", # La couleur des marques sur l'axe
+     labels = FALSE # Faut-il y remettre de nouvelles etiquettes?
+     )
+
+axis(side = 2, # Sur quel axe on veut effectuer des transformations? 
+     col = "#0038B2", # La couleur de l'axe?
+     col.ticks = "darkblue", # La couleur des marques sur l'axe
+     labels = FALSE # Faut-il y remettre de nouvelles etiquettes? 
+     #(on peut aussi donner un vecteur d'etiquettes)
+     )
+#On met ici la legende
+legend(x = "topright", # Ou est ce qu'on veut qu'elle soit 
+       legend = c("Séronégatifs", "Séropositifs"), # Un vecteur qui donne les valeurs a afficher
+       fill = c("#b8e794", "#f0ddc6"), # Les couleurs des cadres (fill)
+       border = "darkblue", # la couleur du bord des petits carres
+       box.col = "darkblue", # la couleur du cadre de la legende
+       title = "Statut sérologique", #Le titre de la legende
+       title.col = "#CC2828", #La couleur du titre de la legende.
+       cex = 1.5, #la taille globale de la legende
+       text.col = "#0038B2")
+```
+
+
+### l'argument `na.rm`
+
+Le montant investit est la somme que l'on remet à un individu lorsqu'il vient chercher son test. On décide de calculer la somme
+totale investie dans l’étude (Que l'individu vienne récupérer son test ou pas) grâce à la fonction `sum`. C'est la somme de la variable `montat_incitation`
+dans la base de données.
+
+```{r}
+sum(cas_pratique$montat_incitation)
+```
+
+On sait très bien que la variable `montat_incitation` ne contient pas de données manquantes. Mais que serait-t-il de cette
+somme si elle en contenait? 
+Lorsque l'on essaye de faire des calculs sur un vecteur qui contient des données manquantes (`NA`), `R` retourne des données manquantes en sortie. Pour cela, créons un 
+vecteur de avec une donnée manquante  en jumelant le vecteur `montat_incitation` et un NA [^3] et calculons la somme de ce vecteur.
+
+```{r}
+nouveau_vecteur <- c(cas_pratique$montat_incitation, NA)
+
+sum(nouveau_vecteur)
+```
+
+On voit bien que la somme retourne une donnée manquante `NA`. Pour éviter que la somme retourne un `NA`, on va lui ajouter l'argument `na.rm = TRUE` qui signifie littéralement *retirez les données manquantes dans le calcul de la somme*. Cet argument est commun à plusieurs fonctions qui travaillent sur les numériques en particulier.
+
+- `mean` qui calcule la moyenne d'un vecteur où il y a des valeurs numériques
+
+- `var` qui calcule la variance de l’échantillon
+
+- `sd` qui calcule l’écart type de l’échantillon
+
+
+```{r}
+sum(nouveau_vecteur, na.rm = TRUE)
+
+mean(nouveau_vecteur, na.rm = TRUE)
+
+var(nouveau_vecteur, na.rm = TRUE)
+
+sd(nouveau_vecteur, na.rm = TRUE)
+```
+
+
+## les petites questions que j'ai reçues.
+
+```{block, type = "montype2"}
+
+**Question une**
+
+Comment mettre des pourcentages en étiquettes au niveau de l'axe des y?
+
+```
+
+Reprenons le graphique en barres sur les manquants. Il serait intéressant d'ajouter en étiquette le pourcentage de manquants avec les pourcentages (%) sur l'axe des ordonnées. Je voulais
+laisser cette question pour y revenir avec le package `ggplot2`, mais je pense que je vais l'aborder ici sans utiliser de package, parce que nous allons apprendre quelques fonctions de R.
+
+- On peut créer un vecteur en utilisant les séquences sous R. On demande à R de créer un vecteur partant d'une valeur initiale à une valeur finale, mais avec un pas.
+C'est la fonction `seq`. L'argument pour préciser le pas est l'argument `by`.
+
+```{r}
+vecteur_numerique <- seq(-1, #debut
+    1, #fin
+    by = 0.1 #le pas
+    )
+
+vecteur_numerique
+```
+
+
+- On peut coller littéralement deux vecteurs sous R pour obtenir un vecteur de caractères formé des deux vecteurs avec la fonction `paste`. Lorsque l'on ne 
+donne  à la fonction `paste` qu'un seul argument à coller avec un vecteur, elle va le coller avec toutes les données du vecteur, un à un. La fonction `paste` a un argument `sep` qui 
+permet de préciser le séparateur que l'on veut utiliser dans le processus de collage.
+
+```{r}
+
+vecteur_bizarre <- c("un", "deux")
+
+paste(vecteur_bizarre, "ami(s)", sep = " bon(s)")
+```
+
+Vous-vous rappelez de la conversion automatique? Si je fais un collage entre un vecteur numérique et tout autre chose, je vais obtenir un caractère et le vecteur numérique sera converti en caractères
+avant de passer au collage.
+
+```{r}
+paste(vecteur_numerique, "%", sep = " ")
+```
+
+Bien là on a déjà comment créer un vecteur  d'étiquettes. Voilà comment on va procéder.
+
+0- Supprimer l'axe y créer par défaut dans le graphique en ajoutant l'argument (`yaxt = "n"`)
+
+1- Créer une séquence qui seront les graduations de l'axe des y grâce à la fonction `seq`
+
+2- Créer un vecteur d'étiquettes qui va être les séquences où l'on aura coller "%" grâce à `paste`
+
+3- Appliquer cette séquence et les étiquettes associées à l'axe des ordonnées grâce à la fonction `axis`.
+
+```{r, fig.width=18, fig.height=12, fig.align="center"}
+noms <- c("sexe", "age", "niveau d’étude", 
+          "résultat du test", "incitation reçue?",
+          "montant de l'incitation", "test cherche?",
+          "rapports sexuels?", "rap. sexuels 12 mois?")
+
+#les coupures au niveau des graduations
+graduations_y <- seq(0,18, by = 1)
+
+label_y <- paste(graduations_y, "%", sep = " ")
+
+barplot(100*pourcentage_manquants,
+        names.arg = noms, #Le nom des elements de l'axe x
+        xlab = "Différentes variables", # le titre de l'axe x
+        ylab = "manquants", # Le titre de l'axe y
+        main = "REPRESENTATION DES % DE MANQUANTS",# Le titre du graphe
+        cex.lab = 1.25,
+        yaxt = "n" #Pour supprimer l'axe produit par defaut.
+        )
+
+#On met ici les labels
+axis(side = 2, #L'axe sur lequel on veut travailler
+     at = graduations_y, #Les endroits ou se trouvent les coupures
+     labels = label_y, #Le label des coupures
+     las = 1 #L'ajustement
+     )
+
+
+```
+
+
+```{block, type = "montype2"}
+
+**Question deux**
+
+J'ai longtemps utilisé du `Rmarkdown`, mais je n'y arrive pas à concevoir un document long
+et très structuré.
+```
+
+Eh bien, je vous propose de regarder le [bookdown](https://bookdown.org/yihui/bookdown/). Le `Rmarkdown` a pour énorme avantage sa simplicité et sa flexibilité. Mais quand il vient à écrire des documents volumineux et lourds, je ne peux que vous conseiller d'utiliser le `bookdown` du package `bookdown`. On y reviendra en large à la séance prochaine, mais je trouve judicieux de l'introduire un peu ici.
+
+
+## Pour la prochaine séance
+
+Pour la prochaine séance, j'ai demandé si vous préférez une séance pur `Rmarkdown`, ou une séance où
+on va entrer plus en profondeur dans le *tidyverse* et faire beaucoup de manipulations de données et des statistiques 
+basées sur les tests. Très peu de personnes ont répondu et c’était dubitatif. Je vais donc diviser la session 
+en deux parties: Une première qui va être axée sur le *tidyverse*, une autre sur `Rmarkdown` et ses basiques.
+Prenez le temps de bien apprendre ce fichier avant d'arriver et de vous documenter un peu si vous savez
+que vous aurez de légères difficultés. **ET SURTOUT N'OUBLIEZ PAS D'INSTALLER LES PACKAGES**. La séance prochaine sera très intéressante, promis. ;-)
+
+Prenez de l'R! et venez.
+
+
+
+
+
+
+[^1]: Un `data.frame` est en fait une liste dont les constituants ont la
+même longueur
+[^2]: Une question avait été posée sur l’étiquetage des axes des ordonnées 
+avec des pourcentages. On va en revenir après dans la section les petites
+questions que j'ai reçues.
+[^3]: Vous venez d'apprendre la deuxième façon de créer un vecteur,
+cette fois ci composé de numériques.

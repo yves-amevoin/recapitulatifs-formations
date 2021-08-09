@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Introduction a R</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Yves Amevoin" />
+    <meta name="date" content="2018-11-14" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Introduction a R
+## Bon, c’est pas une si grande intro
+### Yves Amevoin
+### 2018-11-14
+
+---
+
+
+
+
+class: center, middle, inverse
+background-image: url(who_am_I.gif)
+background-size: cover
+
+# Qui je suis?
+
+---
+class: center, middle
+
+# Il Etait une fois... (d'ou vient R?)
+
+---
+
+# Historique de R
+
+- Au debut il y avait S. Creer par Jonh Chambers
+
+- Professeurs Neo-zelandais
+
+
+![][newzeland]
+
+---
+#Historique de R
+
+
+.pull-left[
+.center[
+  ![][ross]
+  
+  **Ross Ihaka**
+  ]
+]
+
+.pull-right[
+  .center[
+  ![][robert]
+  
+**Robert Gentleman**
+  ]
+]
+
+*A number of people picked up our binaries and offered feedback. The most persistent of these was Martin Mächler of ETH Zurich, who encouraged us to release the R source code as "free software".
+We had some initial doubts about doing this, but Martin's arguments were persuasive, and we agreed to make the source code available by ftp under the terms of the Free Software Foundation's GNU general license. This happened in June of 1995.* 
+
+Ross Ihaka
+
+---
+class: center, middle, inverse
+background-image: url(stick.gif)
+background-size: 80%
+
+# Culture du libre
+
+---
+
+### Pourquoi apprendre R?
+
+1. Parce que le marche le demande (C'est gratuit)
+
+2. Parce que le monde la recherche l'utilise (outre *stata* )
+
+3. Parce que c'est fun.
+
+4. Parce qu'il y aura toujours quelqu'un pour vous aider
+
+4. Parce que si quelqu'un vous dit que c'est difficile, **c'est faux**
+
+4. Parce que vous etes obliges de comprendre ce que vous tapez.
+
+---
+
+### Pourquoi ne pas apprendre R? (ou comment vous convaincre de l'apprendre malgré tout ;-) )
+
+1- Vous aimez votre souris (Mieux vaut donner des ordres à votre machine, que d'en recevoir d'elle).
+
+2- Vous n'avez aucune connaissance en programmation (Tout s'apprend).
+
+3- Vous n'êtes pas bon en anglais (L’occasion est bonne!).
+
+4- Vous avez une aversion contre tous les langages de programmation (Enfin, votre aversion va disparaître!).
+
+5- Vous détestez des erreurs (Prenez un bon café avec vous et ça va passer...).
+
+6- Vous n'aimez pas les chiffres et les calculs... (là y a rien à faire, regardez la section suivante... )
+
+
+
+---
+
+### On va faire quoi?
+
+1- Concepts de base, a partir d'un exemple simple
+
+2- Toujours partir d'une question
+
+3- Importation/Manipulation de donnees.
+
+4- Statistiques descriptives orientees vers la question
+
+5- Connaitre un peu plus les specificites de R et de la console
+
+6- Apprendre a vous familiariser avec les notions de base
+
+7- Comment mettre tout ca ensemble pour faire une histoire.
+
+
+
+
+[ross]: ross_ihaka.png
+[robert]: robert.png
+[newzeland]: new_zeland.png
+    </textarea>
+<script src="libs/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script>
+(function() {
+  var i, text, code, codes = document.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+})();
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

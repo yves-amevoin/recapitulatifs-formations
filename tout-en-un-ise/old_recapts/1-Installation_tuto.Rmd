@@ -1,0 +1,151 @@
+---
+title: "Préliminaires avant la séance"
+author: "Yves Amevoin, ISE"
+date: "Novembre 2018"
+output:
+  html_document:
+    css: style.css
+    highlight: tango
+    theme: simplex
+    toc: yes
+    code_download: TRUE
+---
+
+```{block, type = "montype2"}
+
+*A recent survey on North American males found 42% were overweight, 34% were critically obese and 8% ate the survey.” 
+`Banksy`*
+
+```
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{block, type = "montype2"}
+
+L'objectif de ce petit tutoriel est de guider dans l'installation de R et Rstudio sous Windows et de s'assurer que vous avez une distribution prête pour la suite des travaux que nous allons effectuer.
+```
+
+
+## Installer R sur Windows
+
+### Première installation
+
+Pour une première installation, vous aurez besoin de:
+
+- La dernière version de R, [disponible ici](https://cran.r-project.org/bin/windows/base/)
+- Pour nous orienter vers le futur, nous allons travailler avec la version
+preview de Rstudio, [disponible ici](https://www.rstudio.com/products/rstudio/download/preview/).
+
+Suivez ensuite les étapes suivantes:
+
+- Installez R en lançant le fichier `R-3.5-win.exe`. Gardez les options par défaut
+(`suivant --> suivant -->`)
+- Installez Rstudio en lançant le fichier `RStudio-1.2-numerodeversion.exe`. Gardez aussi les options par
+défaut.
+
+### Une installation propre
+
+Le logiciel R vient avec le minimum pour faire les analyses statistiques. Mais vous aurez besoin d'installer au cours de l'apprentissage un ensemble de petites portions de logiciels qui vont venir compléter R pour faciliter certains traitements et analyses de données. Ces portions sont appelées package. 
+Maintenant nous allons créer un dossier qui va contenir l'installation
+pour les futurs packages, sans que vous ayez à vous déranger  lors de l'installation d'une nouvelle version de R.
+
+
+- Créez dans le dossier `Document` un dossier qui va contenir vos packages (`RPackage` par exemple)
+- Accédez aux paramètres avancés de l'ordinateur
+- Choisissez l'option de création de variables d'environnement
+- Créez une variable d'environnement nommée `R_LIBS_USER` qui va pointer vers
+le dossier que vous avez créer pour contenir les packages.
+
+### Update
+Pour faire un update sous Windows, créez le dossier qui va contenir vos package au
+niveau de la section précédente, et installez comme une nouvelle fois R.
+Si vous avez perdu des package sur le coup, on en discute a la séance de formation.
+
+## Installer R sous Ubuntu/Debian
+
+R se trouve déjà dans les dépôts officiels sous linux à dérivé Debian. Mais
+vous n'aurez pas surement la toute dernière version de R, ceci dû a un décalage
+entre l'ajout de la dernière version et sa sortie. Il est préférable de garder
+ces options par défaut, mais vous pouvez ajouter le dépôt de la dernière version
+si cela vous chante. C'est la première ligne de la commande. 
+
+### Première installation
+```{block, type  = "code"}
+
+sudo add-apt-repository "deb http://cran.rstudio.com/bin/linux/ubuntu $(lsb_release -sc)/"
+
+sudo apt install r-base r-base-core
+
+```
+
+### Update
+
+Au cas ou vous avez déjà installé R vous pouvez juste faire un upgrade (sous ubuntu 18.04 le update est fait automatiquement avant un upgrade. Sous les versions inférieures, faites
+d'abord un update).
+
+```{block, type  = "code"}
+sudo add-apt-repository "deb http://cran.rstudio.com/bin/linux/ubuntu $(lsb_release -sc)/"
+
+sudo apt upgrade
+
+```
+
+
+## Installer R sous Mac
+
+Mais Mac, c'est pour les riches.... [A chercher](https://www.google.com).
+
+## Pour la première séance
+
+Vous aurez besoin d'installer les  packages suivants sous R: `tidyverse` et `tinytex`.
+
+```{r eval=FALSE}
+install.packages("tidyverse")
+install.packages("tinytex")
+
+tinytex::install_tinytex()
+
+
+```
+
+## Description de la base de données
+
+```{block, type = "montype2"}
+
+Ce cas pratique provient de données utilisées en évaluation d'impact
+a l’école, un de nos anciens TPs.
+```
+
+Dans ce cas pratique, nous allons analyser des données provenant d’une évaluation
+d’impact à assignation aléatoire (randomisée). L’objectif est de vérifier si une baisse de coûts
+liés à l’obtention des résultats du VIH Sida, amène une hausse du nombre de personnes qui
+cherchent à obtenir leur résultat.
+Pour cela, on effectue de façon aléatoire des expériences sur des individus qui se présentent
+pour effectuer le test du VIH Sida. En évaluation d’impact, on parle d’Essais Randomisés
+(Random Control Trial). Les sujets au test du VIH sont encouragés ou non dans leur volonté
+d’obtenir leur résultat. On annonce ainsi à un individu choisi de façon aléatoire, qui vient
+effectuer sont test qu’il recevra un montant s’il vient chercher le résultat de son test de VIH.
+Cette annonce n’est pas faite à toutes les personnes ; elle est faite à un certain nombre, choisi
+aléatoirement. Le montant que l’on annonce à un sujet diffère de celui annoncé à un autre.
+Les montants varient donc en fonction des différents individus. Cette variation est, elle aussi
+aléatoire. Les informations concernant les individus de l’expérience sont dans la base du Cas
+pratique.
+
+Un coup d’œil sur la base de données (les 5 premières variables et les 6 premières observations):
+
+```{r echo=FALSE}
+#load("data/cas_pratique.RData")
+#DT::datatable(head(cas_pratique)[,1:5])`
+
+```
+
+Vous pouvez déjà deviner a quoi correspond certaines variables.
+Notre question est la suivante: En jetant un coup d’œil sur les données,
+faut-il encourager les personnes a chercher leur résultat?
+
+
+
+

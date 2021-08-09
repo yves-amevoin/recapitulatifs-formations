@@ -1,0 +1,112 @@
+---
+title: "Récapitulatif de la séance une"
+author: "Yves Amevoin, ISE"
+date: "Novembre 2018"
+output:
+  html_document:
+    css: style.css
+    highlight: tango
+    theme: simplex
+    toc: yes
+    code_download: TRUE
+---
+
+
+```{block, type = "montype2"}
+
+## Pour ceux qui n’étaient pas là , vous avez raté quoi....
+
+Pas grand chose. Après une brève présentation sur moi et sur R, nous avons travaillé  partir d'un dossier nommé `seance1` dont la structure est affichée ici, juste en bas du paragraphe. Il contient les instructions de début pour l'installation de R ainsi qu'une définition de la base de données utilisée dans le travail, qui existe sous différents format dans le dossier `data`.  On a appris à charger une base sous R, sous format `txt`, et au passage
+on a appris quelques raccourcis claviers.
+
+```
+
+**Structure du dossier partagé**
+
+
+
+          seance1
+            +
+            ++++++++ data/
+            +         +
+            +         ++++++++++ cas_pratique.dta
+            +         ++++++++++ cas_pratique.RData
+            +         ++++++++++ cas_pratique.sav
+            +         ++++++++++ cas_pratique.txt
+            +         ++++++++++ cas_pratique.xlsx
+            +         
+            +
+            ++++++++ seance1.R
+            +
+            ++++++++ 1-installation.html
+
+Pour ceux qui veulent installer R et Rstudio, suivez les instructions dans `1-installation.html`.
+    
+## Bref Historique
+
+[R](https://www.r-project.org/) [c'est quoi?](https://www.r-project.org/) Sans rentrer dans les racines de la naissance de R, que je  vous invite à [regarder](https://cran.r-project.org/doc/html/interface98-paper/paper.html) une fois que vous deviendrez fanatique, je vais y aller de façon brève:
+
+- Au début, il y a avait un logiciel statistique (beaucoup plus un programme statistique), appelé **S**, créé par [John Chambers](https://en.wikipedia.org/wiki/John_Chambers_(statistician)). **S** a connu d'énormes évolutions, depuis lors et est un logiciel propriétaire.
+- C'est le mot *propriétaire* qui déclenche les réflexions. Un logiciel propriétaire ne
+donne pas la permission de le modifier librement, ce qui agace souvent le monde scientifique.
+- L'idée est donc venue à des professeurs néo-zélandais ( [Ross Ihaka](https://en.wikipedia.org/wiki/Ross_Ihaka) et [Robert Gentleman](https://en.wikipedia.org/wiki/Robert_Gentleman_(statistician)), vous voyez d'où vient R....),
+de lancer un langage, basé sur le **S** mais qui devait non seulement apprendre des défauts du précédent langage, mais aussi s'ouvrir à la communauté scientifique, permettre que chacun y mette sa patte.
+- *R1.0.0* est donc né officiellement le 29 Février 2000. L'avantage était sa gratuité, mais aussi sa disponibilité pour presque tous les OS (Mac, Windows, Linux). Immédiatement, plein d'anciens acteurs de **S**, s'y sont intéressés. Ils ont apporté une évolution constante, et le monde entier a contribué à améliorer le logiciel et le langage, puisqu'il était accessible à tous.
+
+- Aujourd'hui, R est une immense bulle dans le monde du développement statistique, et a des tentacules incroyables.... On en reviendra tout au long de la série.
+
+R est donc un langage de programmation pour étudier et travailler des données, disposant d'une communauté incroyable et très active. Il existe une tonne de ressources en ligne pour s'entraîner et le maîtriser, qui expliquent les détails les plus minutieux du logiciel.
+
+## Les commandes qu'on a tapées
+
+- On a ouvert le fichier `seance1.R` en double-cliquant dessus. Il était vide, mais s'est
+ouvert sous `Rstudio`. On a profité pour apprendre et connaître un peu l'environnement de `Rstudio`,
+ainsi que les différentes fenêtres. On a aussi appris comment définir un **répertoire de travail** grâce aux commandes `getwd()` et `setwd()`. On a appellé le fichier `seance1.R` **un fichier script**, où on 
+tape les commandes qui vont s’exécuter après dans la console.
+
+- On a ensuite importé une base de donnée au format `.txt` en utilisant une **fonction**. On a dit
+que les commandes sous R se basent sur des fonctions, dont on peut accéder a l'aide en
+faisant `?nom_de_la_fonction`. On a remarqué que concernant la fonction `read.table` pour charger
+les fichiers `.txt`, on a plusieurs options... On a ensuite chargé la base de données dans un objet appellé `cas_pratique` qui est un `data.frame`; un "objet liste" de R. On a vu aussi que les
+commentaires dans un fichier script sont précédés de #
+
+```{r}
+#ceci est un commentaire.
+
+cas_pratique <- read.table("data/cas_pratique.txt", header = TRUE)
+```
+
+- On a vu qu'on peut observer les variables de la base et y accéder avec `$` en utilisant une commande
+nommée `str`.
+
+```{r}
+str(cas_pratique)
+```
+
+On a ensuite vue que les variables sont en fait des vecteurs, qui ont des caractéristiques différentes et particulières. Les facteurs par exemple sont une sorte de représentation étiquettée des
+variables catégorielles.
+
+Voilà, le rattrapage est terminé, sauf pour les raccourcis suivants sous RStudio:
+
+```{block, type = "montype2"}
+
+- CTRL+ENTRE pour exécuter du code
+- ALT+- pour insérer le `<-`
+- CTRL+SHIFT+C pour commenter une portion de texte dans un script.
+
+```
+
+## Pour la prochaine séance
+
+Installez juste les packages du `tidyverse` et une version minimale de latex pour faire
+tourner la demo que nous ferons.
+
+```{r eval=FALSE}
+install.packages("tidyverse")
+install.packages("tinytex")
+
+tinytex::install_tinytex()
+
+
+```
+

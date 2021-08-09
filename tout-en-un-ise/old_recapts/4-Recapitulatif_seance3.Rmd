@@ -1,0 +1,621 @@
+---
+title: "Récapitulatif des séances trois et quatre"
+author: "Yves Amevoin, ISE"
+date: "Décembre 2018"
+output:
+  html_document:
+    css: style.css
+    highlight: haddock
+    theme: flatly
+    toc: yes
+    toc_float: TRUE
+    dpi: 1800
+    dev: "png"
+    code_download: TRUE
+---
+
+## Une intro.... Pas si petite
+
+Pour suivre ce récapitulatif, veuillez installer les packages suivants:
+
+- Les packages du `tidyverse`: en tapant à la console 
+`install.packages("tidyverse")`.
+
+- Si vous ne les avez pas encore, les packages `rmarkdown`, `knitr` et `devtools` en tapant à la 
+console `install.packages(c("rmarkdown", "devtools"))`.
+
+---
+
+```{block intro, type = "montype2"}
+
+#### Pour ceux qui n’étaient pas là , vous avez raté quoi....
+
+A la séance 3, on a eu une bonne dose d'installation qui a fait abandonné 
+plusieurs personnes au cours de la séance parce que les amis n'avaient pas 
+installé les packages nécessaires pour la séance. A la séance 4, on a essayé
+de rattraper le tir en montrant un peu le `tidyverse`, le ggplot2, les tests
+statistiques et une présentation sur  la création de packages sous R. 
+Malheureusement, on n'a pas pas pu faire les boucles et le if. 
+On va y revenir dans le récapitulatif.
+
+Outre la séance d'installation de la séance 3, on a introduit les projets de 
+*RStudio*, le `rmarkdown` et on a effectué une petite introduction au `tidyverse`. 
+On a ainsi appris à créer et gérer un projet sous *Rstudio*, traiter un document
+`rmarkdown` et on a lancé les bases du `tidyverse` avec un focus sur l’opérateur
+pipe... %>% Au passage on a appris quelques raccourcis claviers 
+dont je vais reparler. 
+
+Quelques personnes s'étaient plaintes sur l'impossibilité de réaliser des 
+documents lourds et structurés avec du `rmarkdown`. Je vais essayer de montrer 
+que c'est faux et de vous faire prendre goût à rédiger vos documents et vos 
+rapports dans la section sur `rmarkdown`, avec une introduction au `bookdown`. 
+J'avais aussi promis de faire un clin d’œil sur le `blogdown` pour vous montrer 
+rapidos comment créer votre propre blog ou site web, qui vous permettra si vous le
+nourrissez régulièrement de vous mettre à jour, d'apprendre aux autres et 
+d'apprendre des autres aussi. J'ai aussi introduit une sous-section dessus 
+dans la partie `rmarkdown`. Si c'est seulement cette section sur `rmarkdown` et
+compagnies qui vous intéresse, allez lire la [section là](#lienverslasectionrmd).
+
+Vous vous rappeler de notre base sur les essais randomisés? Après avoir 
+introduit le `tidyverse`, on va essayer de vérifier que les classes d'age sont 
+respectées en faisant une pyramide des âges (on l'a faite à la séance 4),
+et ensuite, on va passer à des tests statistiques pour vérifier quelques 
+associations. Le tout sera accompagné de visualisations graphiques avec `ggplot2`.
+Si c'est juste la section sur `ggplot2` et ses visualisations qui vous intéresse, 
+je vous conseille de vous y [plonger ici](#lienverslasectionggplot2). Par contre, 
+si vous ne vous intéressez qu'à la partie stats, 
+[n'hésitez pas à aller là](#lienverslesstats).
+
+A la fin de la séance, on a fait une petite demonstration sur la création de packages. 
+Je vais revenir là dessus et vous montrer au passage les boucles et le if, avec 
+quelques astuces. C'est la partie programmation et consorts... Si vous êtes là que pour ça,
+allez directement à [la section concernée](#lienverslasectionpackage)
+
+Ça fait beaucoup de choses non? On y va! [^7]
+```
+
+
+## Gestion d'un projet sous *RStudio*.
+
+### Structure du répertoire de travail
+
+L'idee des projets est de mieux organiser votre travail - ou votre projet- sous
+R en gardant le repertoire de travail au repertoire du projet et en adopdant une
+hierarchie des dossiers qui va vous permettre de garder de bonnes habitudes de 
+travail et de rigueur. La structure du dossier final de projet est la suivante [^1]:
+
+          dossier_projet
+            +
+            ++++ dossier_projet.Rproj
+            +
+            ++++++++ data/
+            +         +
+            +         ++++++++++ cas_pratique.dta
+            +         ++++++++++ cas_pratique.RData
+            +         ++++++++++ cas_pratique.sav
+            +         ++++++++++ cas_pratique.txt
+            +         ++++++++++ cas_pratique.xlsx
+            +         
+            ++++++++ input/
+            +
+            ++++++++ output/
+            +           +++++++ figures/
+            +           +
+            +           +++++++ data/
+            +
+            ++++++++ 1-premier-script.R
+            +
+            ++++++++ 2-un-document-markdown.Rmd
+            +
+            ++++++++ readme.txt
+            
+
+On commence par un dossier vide qui va etre le dossier de notre projet. Ce dossier sera de-facto le
+repertoire de travail lorsque l'on va lancer le projet sous *Rstudio*, ce qui permet d'eviter
+la partie `set/get/wd`.
+
+Le dossier contient trois sous-dossiers [^2]:
+
+- Un dossier `data` dans lequel devraient se trouver les bases de donnees de notre analyse.
+
+- Un dossier `input` ou seront les figures et tout autre objets qui viendront enrichir notre travail,
+sans forcement provenir de R (captures d'ecran, etc.)
+
+- Un dossier `output` ou sera les sorties qui seront realisees avec `R`. Ces sorties sont divisees
+en deux principales parties: les figures et les graphes.
+
+### Creation du projet
+
+On a d'abord creer notre projet en allant dans `File >  New Project...`. On a obtenu la fenetre suivante et on a creer le projet dans un dossier. On a insiste sur le fait qu'un projet
+est en fait un dossier que *Rstudio* va creer.
+On a donc choisi l'option `New Directory`, puis l'option `New Project` et enfin un repertoire
+ou le dossier du projet va etre.
+
+```{r figure-projet, echo=FALSE, out.width = '400%'}
+knitr::include_graphics("figures/project_creation.png")
+
+```
+
+
+
+On a utilise les navigations dans l'onglet `Files` du quatrieme panneau (en bas a droite pour ceux qui n'on pas change la disposition par defaut) pour creer l'arborescence qu'on a presente en haut.
+On a alors introduit un fichier rmarkdown, qui devait contenir les codes et les output de nos travaux, et on l'a enregistre dans le dossier du projet. La prochaine section va en detail sur le rmarkdown et explique un peu comment il est concu.
+
+
+
+## Presentation et Gestion du rmarkdown
+
+<a name="lienverslasectionrmd"/>
+</a>
+
+
+### Historique
+
+Comment est né R Markdown? [^3] De l'idée de faire du texte et du code R en même temps dans un même fichier, de façon reproductible et facilement partageable. Le pionnier de cette idée est Yihui Xie, qui s'est appuyé sur l'ancêtre du travail reproductible `Sweave`, qui permettait de faire du LaTeX et du R dans un même fichier, afin de faciliter la rédaction de rapports qui nécessitaient les mêmes types d'analyses. Il a lancé le package [knitr](https://cran.r-project.org/web/packages/knitr/index.html) sur lequel repose le package *rmarkdown*. C'est l'essentiel. R Markdown est souvent présenté sous la forme suivante, mettant en exergue les formats de sortie.
+
+![][OutputFormat]
+
+
+Pour ceux qui sont presses sur la syntaxe du markdown ou carrement ~~n'ont pas envie de se taper~~ la lecture de tout le tuto,
+je vous conseille de lire la [feuille de triche](https://www.rstudio.org/links/r_markdown_cheat_sheet)
+faite par *Rstudio*. Vous pouvez ainsi sauter toute cette section pour aller lire celle sur le tidyverse et les tests statistiques.
+
+
+### Pourquoi utiliser R Markdown ?
+
+```{block quote-reproductibility, type = "montype2"}
+
+"What is Reproducibility?
+ Reproducibility is one of the main principles of the scientific method, and refers to the ability of a test or experiment to be accurately reproduced, or replicated, by someone else working independently."
+ 
+ **Yihui Xie**
+
+```
+
+
+A cause des raisons suivantes:
+
+1. La reproductibilite. L'idee de la reproductibilite est de permettre a tout un
+chacun de pouvoir reprendre sa propre etude et ses propres analyses, en suivant
+exactement les memes etapes que soit.
+
+
+1. R Markdown a une syntaxe facile à maîtriser; en quelques minutes d'effort on acquiert l'essentiel pour écrire son document.
+
+2. Avec un seul fichier, vous pouvez avoir plusieurs formats à la clé (Word, PDF (à condition d'avoir LaTeX), HTML)
+
+
+3. Cela permet de faciliter le partage de fichiers, l'explication des scripts effectués et le partage au niveau de la communauté scientifique.
+
+Et enfin, on peut écrire tout un article en Markdown.
+Faites un tour sur [la Gallerie de rmarkdown](http://rmarkdown.rstudio.com/gallery.html) et regardez la variété de documents que l'on peut réaliser avec.
+
+
+### Creation d'un fichier rmarkdown
+
+On a appris a creer un fichier rmarkdown sous *Rstudio*. Pour ce faire, lancez R Markdown en effectuant les taches suivantes dans R Studio:
+
+`File>New File>R Markdown`
+
+Il apparaît alors une fenêtre demandant de préciser les paramètres du fichier que l'on a créé. Il faut preciser le titre du document, son auteur et le format de sortie. Il est possible d'avoir du `word` (en fait un `.docx`) ou du `pdf` comme format de sortie, je reviendrai dans la section sur la sortie `pdf`. Pour la version word, je vous renvoie a [la documentation]((http://rmarkdown.rstudio.com/word_document_format.html))[^6]. 
+
+
+![][Parametre]
+
+
+Une fois les paramètres spécifiés, on peut passer à l'analyse du document basique qui sert de début à l'apprentissage du langage de R Markdown. Il s'agit du document suivant:
+
+<center>
+![][FichierBasique]
+</center>
+
+### L'en-tête d'un document R Markdown
+
+L'en-tête d'un document R Markdown est constitué de petites phrases entourées d'un `---`, comme dans le document utilisé pour créer ce fichier que vous lisez:
+
+```
+---
+title: "Récapitulatif de la séance trois"
+author: "Yves Amevoin, ISE"
+date: "Novembre 2018"
+output:
+  html_document:
+    css: style.css
+    highlight: kate
+    theme: yeti
+    toc: yes
+    toc_float: TRUE
+    dpi: 600
+    dev: "png"
+    code_download: TRUE
+---
+```
+
+
+Cet ensemble de phrases  contient les informations nécessaires au paramétrage du document. Le document lui même peut être considéré comme un ensemble de données (section, texte, code R), et les parties situées entre ces `---`, des informations donnant des attributs et des paramètres à ces données (couleur, titre, date de création, format): On parle de **métadonnées**. Ces attributs doivent être transmis à un langage qui se charge de les stocker et de les rendre au document pour en changer l'aspect ou ajouter des informations. Ce langage, c'est le **YAML** qui signifiait au début _Yet Another Markup Language_ mais qui est devenu _YAML Aint Markup Language_. En clair le **YAML** c'est quoi? Une syntaxe qui permet de stocker des données sur le document et qui les utilise pour paramétrer le document R Markdown et y ajouter des choses. Cette syntaxe est très stricte, avec des deux points, des retours à la ligne, des guillemets et des indentations (petits espaces après le retour à la ligne) pour cibler les sous-options d'une option mere. Par exemple, pour le `html_document` qui signifie le format de sortie, on a demande d'inclure une table des matieres (`toc:yes`), la possibilite de telecharger les codes du document (`code_download : TRUE`). Les options sont en general liees aux format de sortie liees au document que vous voulez obtenir. Comment les données sur le document sont stockées? Dans un objet appelé `metadata` dans le package `rmarkdown`. Regardez:
+
+```{r metadata}
+rmarkdown::metadata$title
+```
+
+
+Pour un document HTML, il existe une pléthore de paramètres (auteur, date, fonte, etc.) et l'on peut même ajouter un ficher qui prend bien en charge la mise en forme, comme mon fichier `style.css` que vous voyez dans l'option `css`. On peut en faire de même avec un fichier PDF. On pourrait écrire un article dessus. Mais en général le petit nombre de paramètres par défaut proposé par *Rstudio* suffit amplement pour des documents de petite envergure. Dans le cas où vous voulez des documents lourds, il serait  souhaitable de jeter un coup d’œil sur les pages suivantes afin de regarder comment contrôler la mise en page:
+
+* Pour le format HTML, [Regardez ici](http://rmarkdown.rstudio.com/html_document_format.html)
+
+* Pour le format PDF, [Regardez là](http://rmarkdown.rstudio.com/pdf_document_format.html)
+
+* Pour le format Word, [Jettez un coup d'oeil là](http://rmarkdown.rstudio.com/word_document_format.html)
+
+
+### Les chunks
+
+Un fichier `rmarkdown` est un  fichier dans lequel se trouvent les codes qui vont
+permettre de generer les analyses et les resultats associes aux analyses proprement 
+dites ainsi que les commentaires de ces analyses. Ces codes se trouvent dans 
+des portions grises appelees **chunk**, afin de les distinguer des commentaires 
+- du texte brut - que vous ecrivez. Comment inserer un chunk lorsque l'on travaille
+sous *Rstudio*? **Pour inserer un chunk R sous _Rstudio_, utilisez le raccourci 
+clavier `CTRL+ALT+I`**. Mais si vous voulez ~~vous~~ taper la syntaxe de 
+l'ecriture, un chunk commence par ces trois accents graves ```` ``` ```` suivis 
+de r que l'on met entre des accolades, ```` ```{r} ```` et il se termine par trois
+accents graves aussi ```` ``` ````. Une erreur commune est de ne pas terminer
+son chunk ou d'effacer par maladresse les trois accents de la fin. 
+
+Les chunk peuvent avoir des options en fonction de comment l'on veut traiter le 
+rendu. En general on peut soit vouloir afficher le code ou pas, soit la sortie 
+du code ou pas, soit evaluer le code ou pas. Vous pouvez parcourir les options 
+d'un chunk R que vous aurez insere en cliquant sur les parametres du chunk.
+
+<center>
+![][ChunkParameters]
+</center>
+
+Une fois que vous verrez comment les options ont ete inserees, vous pouvez taper
+le code vous meme. On a donc recharge notre base de donnees en utilisant 
+le chunk suivant:
+
+<center>
+![][ChunkInsertion]
+</center>
+
+        
+Les chunks par defaut, supposent que vous avez du R comme langage, mais il est possible de creer des chuncks avec d'autres langages.  Vous pouvez choisir le langage associe au chunk 
+que vous voulez inserer en cliquant sur **insert** en haut a gauche de l'editeur. Dans la figure en bas par exemple, j'insere un chunk avec des commandes systemes.
+
+<center>
+![][ChunkEngine]
+</center>
+
+
+
+```{bash chunks-bash}
+cd ~/Documents
+ls
+
+```
+
+
+Si vous faites de meme, vous verrez que votre chunk commence par ```` ```{bash} ````.
+Cela permet a knitr de savoir quel langage utilise dans le chunk. Ce mecanisme
+est appele 
+
+Les chunk peuvent avoir un nom. L'idee est de leur permettre d'etre facilement 
+accessible en utilisant les onglets de navigation de *Rstudio*. Pour nommer un 
+chunk, il suffit de mettre 
+
+### Le chunk setup
+
+### Des listes et des formules
+
+On peut faire des listes avec un fichier R Markdown de façon très facile:
+
+```
+Une liste numérotée:
+
+1. Un
+2. Deux
+3. Trois
+3. Quatre
+
+Vous remarquerez qu'il augmente en même temps le chiffre non?
+
+Et des listes non numérotées comme avec des tirets:
+
+- Un
+- Deux
+- Trois
+
+Ou avec des points:
+
+* Un
+* Deux
+* Trois
+
+Ou les deux:
+
+* J'aime la biostatistique
+    + Les eleves n'ont pas installer les packages
+    + Coucou a tous.
+  
+* Il sait mettre la différence entre les rondes blanches et les noires. Il suffit d'aller à la ligne et de mettre deux indentations avec le `backspace` (l'accent grave est pour mettre en exergue) pour avoir des sous-listes.
+```
+
+Le texte précédent donne la sortie suivante:
+
+```{block, type= "montype2"}
+Une liste numérotée:
+
+1. Un
+2. Deux
+3. Trois
+3. Quatre
+
+Vous remarquerez qu'il augmente en même temps le chiffre non?
+
+Et des listes non numérotées comme avec des tirets:
+
+- Un
+- Deux
+- Trois
+
+Ou avec des points:
+
+* Un
+* Deux
+* Trois
+
+Ou les deux:
+
+* J'aime la biostatistique
+    + Les eleves n'ont pas installer les packages
+    + Coucou a tous.
+  
+* Il sait mettre la différence entre les rondes blanches et les noires. Il suffit d'aller à la ligne et de mettre deux indentations avec le `backspace` pour avoir des sous-listes.
+
+```
+
+---
+
+On peut faire du pdf base sur du $\LaTeX$ dans rmarkdown, comme je l'avais dit en montrant cette image [ici][OutputFormat].
+<a name="lienverslehaut"/>
+</a>
+On peut insérer des formules $\LaTeX$ dans un document R Markdown peu importe le format de sortie, en utilisant la même syntaxe que celle de LaTeX:
+
+```
+$\sum_{i=1}^n\alpha_i$;
+
+$tan(x)=\frac{cos(x)}{sin(x)}$
+```
+
+
+```{block, type="montype2"}
+$\sum_{i=1}^n\alpha_i$;
+
+$tan(x)=\frac{cos(x)}{sin(x)}$
+```
+
+
+### Insérer des Images, Insérer des tableaux
+
+Le fichier que vous lisez est plein d'images qui permettent d'illustrer les propos. On peut insérer des images dans un fichier R Markdown. Pour cela il faut donner un identifiant à l'image (comme par exemple `monimage`) et l’insérer dans le document de la façon suivante:
+
+```
+![Le titre de l'image][monimage]
+```
+
+Mais comment R Markdown retrouve l'image correspondante? En mettant à **la fin du fichier** les références permettant d'atteindre l'image. La syntaxe est la suivante pour un format png par exemple.
+
+```
+[monimage]: Chemin_vers_limage/image.png "Texte popup qui s'affiche quand la souris survole"
+```
+
+L'identifiant peut être utilisé pour indexer l'image à travers un lien dans le document, comme j'ai fait pour [ici](#lienverslehaut)
+
+#### Les Tableaux
+
+Il existe plusieurs manières d'insérer un tableau, la façon la plus recommandée étant d'utiliser le package `knitr` comme présenté [précédemment](#lienversletableau). 
+Cependant, il est possible d'insérer un tableau dans un document R Markdown de la façon suivante, ou les deux points permettent de dire comment l'on veut aligner les elements du tableau.
+
+```
+: Un Tableau
+
+|Aligné à Droite|Aligné à Gauche|Par Défaut|Au Centre|
+|--------------:|:--------------|----------|:-------:|
+|Installez      |N'oubliez pas  |Package    | les     |
+|les            |Dinstaller     |Installez  |package    |
+|package        |les            |avant de venir|5      |
+
+
+
+```
+
+```{block, type="montype2"}
+: Un Tableau
+
+|Aligné à Droite|Aligné à Gauche|Par Défaut|Au Centre|
+|--------------:|:--------------|----------|:-------:|
+|Installez      |N'oubliez pas  |Package    | les     |
+|les            |Dinstaller     |Installez  |package    |
+|package        |les            |avant de venir|5      |
+
+```
+
+---
+
+### Les petits plus pour finir
+
+#### Un fichier comme celui-ci ... On fait comment?
+
+Pour créer un fichier comme celui-ci, rien de plus simple! Créez un document R Markdown normal et ajoutez quelques paramètres pour le rendre plus attractif. J'ai d'abord changé le thème général en choisissant le thème `flatly` que j'aime bien. Pour cela, il faut ajouter la syntaxe `theme: flatly` dans le bloc **YAML**. J'ai aussi ajouter la table des matières, ainsi qu'un défilement plutôt intéressant de la table:
+
+```
+---
+# Le haut de la syntaxe
+toc: true
+toc_float:
+      collapse: true
+      smooth_scroll: true
+---
+```
+
+La mise en forme de la page et le style ont été gérés avec un fichier de configuration, appelé `style.css`. A quoi sert un fichier .css? A définir la mise en page de pages web. J'ai juste utilisé quelques bribes de connaissance dans le domaine pour gérer la mise en page. Le css peut à lui tout seul faire l'objet d'un autre fichier tutoriel. Mais pas besoin de grand choses pour une mise en forme comme celle utilisée dans ce document. Il suffit juste de [jeter un coup d'oeil](style.css) sur mon fichier pour vous en rendre compte. Dans le fichier css,`body` représente le corps du document et les propriétés définissent comment le document est formaté. Ainsi, mon document est mis en fonte Georgia, 13pt, et  **justifié** avec la syntaxe suivante:
+
+```
+body{
+  font-family: Georgia;
+  font-size: 13pt;
+  text-align: justify;
+}
+```
+
+`h1`, `h2`, `h3` désignent les sections et sous sections de niveaux 1,2,3 respectivement. J'ai géré aussi la mise en forme de certains blocs dans le fichier css. Cela fera l'objet de la section suivante. Pour plus d'informations sur le css, rendez-vous[^4] sur la page [là](https://developer.mozilla.org/fr/Apprendre/CSS). Reste à inclure le fichier dans le document à travers la syntaxe **YAML** `css: style.css` après l'avoir mis dans le même répertoire que le fichier R Markdown.
+
+#### La mise en forme des blocs
+
+La mise en forme des blocs s'est faite en utilisant aussi du `css`.  Le package `knitr` permet d'insérer d'autres langages que du R dans les blocs de code **et même de les exécuter à travers** un système nommé [engine](https://yihui.name/knitr/demo/engines/). Il est aussi possible de créer des blocs vides, non conformes à un langage précis ou des blocs propres formatés en Markdown. C'est ce qui a été fait dans les blocs en marron dans le document. Pour créer un bloc propre en Markdown, dans le fichier R Markdown on écrit un bloc suivant:
+
+
+```
+````{block, type="untype"}
+n = 10
+rnorm(n)
+````
+```
+
+Il faut ensuite faire la mise en forme en y dans joignant le fichier `.css` la forme dédiée au bloc `untype`. Dans le fichier `.css`, on pourra donc écrire les blocs de code suivants:
+
+```
+.untype{
+  background-color: #f9f5f3;
+  font-size:12pt;
+  font-family: "Georgia", serif;
+  padding-top:5px;
+  padding-left:8px;
+  border-left: 5px solid #e8dad1;
+  padding-bottom:5px;
+  padding-right:5px;
+}
+```
+
+Ainsi, à chaque fois que l'on choisira un bloc de type `untype`, il aura les propriétés cités plus haut.
+
+
+#### Et pour un document lourd? Ou un article?
+
+
+
+N'exagérons rien, me direz-vous.... Pourquoi rédiger un livre entier ou un article dans *Rstudio* alors qu'on a Word?
+
+**Parce que c'est reproductible**
+
+Vous vous rendez-compte d'une erreur? Une modification et ça y est! tout est réglé. Pas de copier coller avec des pertes de temps et des risques d'erreurs. Aussi, vous pouvez juste balancer le code à un ami et il peut reprendre les mêmes analyses et observer si vous avez tout bien fait, ou loupez quelque chose... Ça n'arrange que la recherche.
+
+Revenons au titre, comment rédiger un article sous R Markdown. Lorsque vous décidez de créer un nouveau document sous R Markdown, vous avez une page suivante correspondant au document que vous voulez:
+
+![][Template]
+
+En bas, vous pouvez choisir l'option _From Template_ pour créer le document à partir d'exemplaires existant déjà. Cette section nous permet de choisir un ensemble d'exemplaires et de les utiliser à outrance lorsque vous souhaitez faire un nouveau document R Markdown, en passant outre le format basique que *Rstudio* propose. 
+
+[Qu'est ce qu'un _Template_ de R markdown?](http://rmarkdown.rstudio.com/developer_document_templates.html?version=1.0.136&mode=desktop)
+
+C'est un ensemble de formats et de propriétés prédéfinis qui vous permettent d'accélérer le travail si vous avez l'habitude d'écrire des documents qui ont la même structure. On peut en créer un avec R Markdown, mais cela nécessite un peu de tweak... 
+
+Vous pouvez néanmoins utiliser des _Template_ existants, en installant le package `rticles` par exemple qui vous permettra d'avoir les formats prédéfinis pour les articles dans différents journaux. Si vous pensez publier dans tel ou tel journal, vous pouvez définir un Template pour ce journal s'il n'existe pas et rédiger avec, ou même le partager. Installez le package `rticles`,
+
+```{r, warning=FALSE, eval=FALSE}
+
+  install.packages("rticles", type="source")
+
+```
+
+Puis vous verrez les exemplaires pour les articles dans la section `From Template`. Pour le reste, à vous de jouer. Vous pouvez ajouter d'autres Templates en faisant un tour sur la [gallerie de R Markdown](http://rmarkdown.rstudio.com/gallery.html).
+
+## Le bookdown
+
+Peut-on ecrire un livre avec du rmarkdown? Oui, c'est possible. Et pour rendre le tout beau, avec du `bookdown`. [Jetez-vous pour regarder](https://bookdown.org/). Si vous voulez juste acquerir les bases necessaires pour rediger, on continue.
+
+
+## Le tidyverse
+
+
+## Les figures avec `ggplot2`
+
+<a name="lienverslasectionggplot2"/>
+</a>
+
+
+## Les tests statistiques
+
+<a name="lienverslesstats"/>
+</a>
+
+
+## La creation de package sous *Rstudio*
+
+<a name="lienverslasectionpackage"/>
+</a>
+
+
+## Les petits plus pour finir...
+
+Je ne saurais terminer sans donner une documentation pour ceux et celles qui 
+veulent approfondir leur connaissance en stats et R.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[LanceRmark]: figures/Ouvrir_Fichier.png "Lancement de rmarkdown"
+[Parametre]: figures/Parametre.png "Choix des paramètres du fichier: titre, auteur, etc."
+[FichierBasique]: figures/FichierBasique.png "Le fichier sur lequel vous vous basez pour créer un doc rmarkdown"
+[OutputFormat]: figures/rmd_output_formats.png "Les formats de sortie de rmarkdown"
+[RmdSyntax]: figures/mdSyntax.png
+[ChunkParameters]: figures/parametres_chunk.png
+[ProjetRstudio]: figures/project_creation.png
+[ChunkEngine]: figures/ChunkEngine.png "Les differents langages associes aux chunks"
+[ChunkInsertion]: figures/ChunkInsertion.png 
+
+
+[^1]: Le `readme.txt` que j'ai ajoute n'est pas obligatoire, mais il serait interessant d'expliquer
+aux gens le dossier et ce qu'il y a l'interieur, ou meme ton futur toi qui ne comprendrait plus rien
+dans quelques annees au travail que tu avais fait. Certains en font un `readme.html` (ecrit en markdown), d'autres un `readme.txt`.
+
+[^2]: Libre a vous d'organiser votre dossier de travail comme vous voulez, pourvue que
+vous gardiez une certaine rigueur dans l'organisation. Je presente ici mon workflow habituel (Pas
+vraiment puisque dans mon workflow habituel, le dossier `data` se trouve dans `input`)
+
+[^3]: Cette section provient d'un document explicatif sur le Markdown que j'avais ecris
+prealablement. Les personnes qui trouveraient une quelconque similitude avec un de mes anciens
+docs... ~~No comments~~.
+[^4]: Je me suis rendu compte qu'il est long quand je l'ai fini.
+[^6]: C'est vraiment hyper simple de modifier le format de sortie word
