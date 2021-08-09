@@ -1,0 +1,77 @@
+/* Whole document: */
+body{
+  font-size: 11pt;
+}
+/* Headers
+h1{
+  font-size: 14pt;
+  font-weight: bold;
+  font-variant: small-caps;
+  color: #7F0000;
+}*/
+
+h2{
+  font-size: 12pt;
+  font-weight: bold;
+  font-variant: small-caps;
+
+}
+
+h3{
+  font-size: 11pt;
+  font-weight: bold;
+  font-variant: small-caps;
+
+}
+
+.rmdcomment{
+  font-size: 10pt;
+  font-family: times;
+  background-color:  #fff0de;
+  padding: 1em 1em 1em 4em;
+  margin-bottom: 10px;
+  border-left: 5px solid #572e18;
+}
+
+.montype1{
+  background-color: #E5FFE5;
+  font-size:11pt;
+  font-family: verdana;
+  padding-left:40px;
+  padding-top:10px;
+  padding-bottom:10px;
+  border-left: 5px solid green;
+}
+
+.montype2{
+  background-color: #f9f5f3;
+  font-size:12pt;
+  font-family: "Helvetica", sans-serif;
+  padding-top:5px;
+  padding-left:8px;
+  border-left: 5px solid #e8dad1;
+  padding-bottom:5px;
+  padding-right:5px;
+}
+
+.code {
+  background-color: #EFEFF9;
+  color: black;
+  font-size:9pt;
+  font-family: Courier, monospace;
+  padding-top:5px;
+  padding-left:8px;
+  border-left: 5px solid #e8dad1;
+}
+
+.end{
+  background-color: #ffe5e5;
+  font-size:12pt;
+  font-family: "Georgia";
+  color: red;
+  padding-top:5px;
+  padding-left:8px;
+  border-left: 5px solid red;
+}
+
+

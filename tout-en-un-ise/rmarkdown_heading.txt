@@ -1,0 +1,14 @@
+---
+title: "RÉCAPITULATIFS TOUT EN UN"
+subtitle: "La rédaction du document a nécessité plus de temps que prévu :-("
+output:
+  html_document:
+    css: mon_style.css
+    highlight: haddock
+    number_sections: yes
+    theme: united
+    toc: yes
+    toc_float:
+      collapsed: yes
+      smooth_scroll: yes
+---

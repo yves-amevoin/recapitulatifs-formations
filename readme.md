@@ -1,0 +1,1 @@
+A simple folder with some random stuffs done in stats and teaching
